@@ -69,11 +69,3 @@ app.post("/login", (req, res) => {
   });
 });
 ```
-
-#### Example Attack
-
-You can exploit the login page vulnerability with:
-
-- Authentication bypass: Enter `admin' --` as username and anything as password
-- This turns the query into: `SELECT * FROM users WHERE username = 'admin' --' AND password = '...'`
-- The `--` comments out the rest of the SQL query, allowing login as admin without knowing the password
