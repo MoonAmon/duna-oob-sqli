@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Arrakis Communication Network</title>
+    <style>
+        body {
+            font-family: 'Trebuchet MS', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f2e3; /* Sand color background */
+            color: #4a3f35;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #b8860b; /* Dark goldenrod for spice color */
+            padding-bottom: 10px;
+        }
+        .user-info {
+            text-align: right;
+            background-color: rgba(184, 134, 11, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .house-badge {
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 3px;
+            margin-left: 5px;
+        }
+        .house-atreides {
+            background-color: #204060; /* Atreides blue */
+            color: white;
+        }
+        .house-harkonnen {
+            background-color: #601111; /* Harkonnen red */
+            color: white;
+        }
+        .house-fremen {
+            background-color: #8c7a5b; /* Fremen sand color */
+            color: white;
+        }
+        .house-corrino {
+            background-color: #b8860b; /* Imperial gold */
+            color: black;
+        }
+        form {
+            border: 1px solid #b8860b;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            background-color: white;
+        }
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            min-height: 100px;
+            box-sizing: border-box;
+            border: 1px solid #b8860b;
+        }
+        .planet-select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #b8860b;
+        }
+        button {
+            background-color: #b8860b;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #98660b;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            border-bottom: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .message-metadata {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            color: #777;
+        }
+        .planet-tag {
+            background-color: #e0d0aa;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.8em;
+        }
+        .message-id {
+            color: #888;
+        }
+        .message-content {
+            white-space: pre-wrap;
+        }
+        .nav-links {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .nav-links a {
+            margin-right: 15px;
+            color: #b8860b;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+        .section-title {
+            color: #b8860b;
+            border-bottom: 1px solid #b8860b;
+            padding-bottom: 5px;
+        }
+        .planets-section {
+            margin-top: 30px;
+        }
+        .planet-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .planet-item {
+            background: white;
+            border-radius: 5px;
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+        .planet-item:hover {
+            background-color: #f0e8d9;
+        }
+        .planet-info {
+            display: none;
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            border: 1px solid #b8860b;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Arrakis Communication Network</h1>
+        <div class="user-info" id="userInfo">
+            <p>Not logged in. <a href="/login.html">Login</a> or <a href="/register.html">Register</a></p>
+        </div>
+    </div>
+
+    <div id="postForm" style="display: none;">
+        <form action="/post" method="POST">
+            <input type="hidden" id="formUsername" name="username">
+            <select name="planet" class="planet-select" id="planetSelect">
+                <option value="">Select origin planet</option>
+                <!-- Planet options will be loaded dynamically -->
+            </select>
+            <textarea name="content" placeholder="Enter your message. Remember, the Bene Gesserit are always watching..." required></textarea>
+            <button type="submit">Send Transmission</button>
+        </form>
+    </div>
+
+    <div id="loginPrompt" style="display: none;">
+        <p>Please <a href="/login.html">login</a> or <a href="/register.html">register</a> to send transmissions.</p>
+    </div>
+
+    <h2 class="section-title">Transmissions</h2>
+    <ul id="messages"></ul>
+
+    <div class="planets-section">
+        <h2 class="section-title">Planet Database</h2>
+        <div class="planet-list" id="planetList"></div>
+        <div class="planet-info" id="planetInfo"></div>
+    </div>
+
+    <div class="nav-links">
+        <div>
+            <a href="/">Home</a>
+            <a href="#" id="spiceTransactionsLink">Spice Transactions</a>
+        </div>
+        <div>
+            <a href="/logout" id="logoutLink" style="display: none;">Logout</a>
+        </div>
+    </div>
+
+    <script>
+        // Load planets for dropdown
+        fetch('/planets')
+            .then(res => res.json())
+            .then(planets => {
+                const select = document.getElementById('planetSelect');
+                planets.forEach(planet => {
+                    const option = document.createElement('option');
+                    option.value = planet.name;
+                    option.textContent = planet.name;
+                    select.appendChild(option);
+                });
+
+                // Also display planets in the planet list
+                const planetList = document.getElementById('planetList');
+                planets.forEach(planet => {
+                    const div = document.createElement('div');
+                    div.className = 'planet-item';
+                    div.textContent = planet.name;
+                    div.dataset.planet = planet.name;
+                    div.addEventListener('click', () => showPlanetInfo(planet.name));
+                    planetList.appendChild(div);
+                });
+            });
+
+        // Function to show planet information
+        function showPlanetInfo(planetName) {
+            fetch(`/planet/${encodeURIComponent(planetName)}`)
+                .then(res => res.json())
+                .then(planet => {
+                    if (planet.error) {
+                        alert(planet.error);
+                        return;
+                    }
+                    
+                    const planetInfo = document.getElementById('planetInfo');
+                    planetInfo.style.display = 'block';
+                    planetInfo.innerHTML = `
+                        <h3>${planet.name}</h3>
+                        <p>${planet.description}</p>
+                        <p><strong>Controlling House:</strong> ${planet.controlling_house || 'None'}</p>
+                        <p><strong>Spice Present:</strong> ${planet.spice_presence ? 'Yes' : 'No'}</p>
+                    `;
+                });
+        }
+
+        // Check authentication status
+        fetch('/auth-status')
+            .then(res => res.json())
+            .then(data => {
+                if (data.authenticated) {
+                    // User is logged in
+                    let houseClass = '';
+                    if (data.user.house === 'Atreides') houseClass = 'house-atreides';
+                    else if (data.user.house === 'Harkonnen') houseClass = 'house-harkonnen';
+                    else if (data.user.house === 'Fremen') houseClass = 'house-fremen';
+                    else if (data.user.house === 'Corrino') houseClass = 'house-corrino';
+                    
+                    document.getElementById('userInfo').innerHTML = `
+                        <p>Logged in as: <strong>${data.user.username}</strong> 
+                        <span class="house-badge ${houseClass}">${data.user.house}</span>
+                        <br>Role: ${data.user.role}</p>`;
+                    document.getElementById('postForm').style.display = 'block';
+                    document.getElementById('formUsername').value = data.user.username;
+                    document.getElementById('logoutLink').style.display = 'inline';
+                } else {
+                    // User is not logged in
+                    document.getElementById('loginPrompt').style.display = 'block';
+                }
+            });
+
+        // Fetch and display messages
+        fetch('/messages')
+            .then(res => res.json())
+            .then(data => {
+                const ul = document.getElementById('messages');
+                if (data.length === 0) {
+                    ul.innerHTML = '<li>No transmissions available.</li>';
+                } else {
+                    data.forEach(msg => {
+                        const li = document.createElement('li');
+                        const date = msg.timestamp ? new Date(msg.timestamp).toLocaleString() : 'Unknown time';
+                        li.innerHTML = `
+                            <div class="message-header">
+                                <span>${msg.username}</span>
+                                <span class="message-id">#${msg.id}</span>
+                            </div>
+                            <div class="message-metadata">
+                                <span>Origin: <span class="planet-tag">${msg.planet || 'Unknown'}</span></span>
+                                <span>${date}</span>
+                            </div>
+                            <div class="message-content">${msg.content}</div>`;
+                        ul.appendChild(li);
+                    });
+                }
+            });
+
+        // Handle spice transactions link
+        document.getElementById('spiceTransactionsLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            fetch('/spice-transactions')
+                .then(res => res.json())
+                .then(transactions => {
+                    const ul = document.getElementById('messages');
+                    ul.innerHTML = '<h3>Spice Transactions</h3>';
+                    if (transactions.length === 0) {
+                        ul.innerHTML += '<li>No spice transactions recorded.</li>';
+                    } else {
+                        transactions.forEach(tx => {
+                            const date = tx.transaction_date ? new Date(tx.transaction_date).toLocaleString() : 'Unknown time';
+                            const li = document.createElement('li');
+                            li.innerHTML = `
+                                <div class="message-header">
+                                    <span>Transaction #${tx.id}</span>
+                                    <span>${date}</span>
+                                </div>
+                                <div class="message-content">
+                                    <p><strong>Seller:</strong> ${tx.seller}</p>
+                                    <p><strong>Buyer:</strong> ${tx.buyer}</p>
+                                    <p><strong>Amount:</strong> ${tx.amount} kg</p>
+                                    <p><strong>Price:</strong> ${tx.price.toLocaleString()} solaris</p>
+                                </div>`;
+                            ul.appendChild(li);
+                        });
+                    }
+                });
+        });
+    </script>
+</body>
+</html>
