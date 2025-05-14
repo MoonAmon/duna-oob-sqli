@@ -1,3 +1,13 @@
+/**
+ * DUNA SECURITY PATCH
+ *
+ * Vulnerabilidades corrigidas:
+ * 1. Blind SQL Injection no endpoint /post
+ * 2. Blind SQL Injection no endpoint /message
+ * 3. SQL Injection no endpoint /planet/:name
+ * 4. Blind SQL Injection no endpoint /login
+ */
+
 const express = require("express");
 const sqlite3 = require("sqlite3").verbose();
 const bodyParser = require("body-parser");
@@ -18,25 +28,14 @@ app.use(
   })
 );
 
-// Create tables if not exists - Now managed by setup-db.js
-// Tables in our DB: messages, users, planets, spice_transactions
-
-// Post a new message - with blind SQL injection vulnerability
-// Example exploit: Using the content field with payload like:
-// content=test' AND (SELECT substr(password,1,1) FROM users WHERE username='PaulAtreides')='m' AND '1'='1
-// This will execute normally if the first character of Paul's password is 'm'
-// If not, it will appear to fail with an error but not tell you the exact reason
+// CORREÇÃO 1: Endpoint /post - Usar parâmetros parametrizados em vez de concatenação direta
 app.post("/post", (req, res) => {
   const { username, content, planet } = req.body;
 
-  // VULNERABLE: Blind SQL injection in the message posting
-  // The content parameter is directly concatenated into the SQL query
-  const query = `INSERT INTO messages (username, content, planet) 
-                  VALUES ('${username}', '${content}', '${
-    planet || "Unknown"
-  }')`;
+  // CORRIGIDO: Usando parâmetros parametrizados para prevenir SQL injection
+  const query = `INSERT INTO messages (username, content, planet) VALUES (?, ?, ?)`;
 
-  db.run(query, (err) => {
+  db.run(query, [username, content, planet || "Unknown"], (err) => {
     if (err) {
       console.error("Database error:", err.message);
       return res.status(500).send("Error posting message");
@@ -45,7 +44,7 @@ app.post("/post", (req, res) => {
   });
 });
 
-// List all messages
+// mensagens
 app.get("/messages", (req, res) => {
   db.all(
     "SELECT id, username, content, planet, timestamp FROM messages ORDER BY id DESC",
@@ -57,13 +56,14 @@ app.get("/messages", (req, res) => {
   );
 });
 
-// Blind SQLi vulnerable endpoint for messages
+// CORREÇÃO 2: Endpoint /message - Usar parâmetros parametrizados para id
 app.get("/message", (req, res) => {
   const id = req.query.id;
-  // Intentionally vulnerable: user input directly in query
-  db.get(`SELECT * FROM messages WHERE id = ${id}`, (err, row) => {
+
+  // CORRIGIDO: Usando parâmetros parametrizados para prevenir SQL injection
+  db.get("SELECT * FROM messages WHERE id = ?", [id], (err, row) => {
     if (err) return res.status(500).send("DB error");
-    // Blind: only tell if exists or not
+    // Blind: apenas informar se existe ou não
     if (row) {
       res.send("Message exists");
     } else {
@@ -72,7 +72,7 @@ app.get("/message", (req, res) => {
   });
 });
 
-// Get all planets
+// planetas
 app.get("/planets", (req, res) => {
   db.all("SELECT * FROM planets ORDER BY name", [], (err, rows) => {
     if (err) return res.status(500).json({ error: "DB error" });
@@ -80,20 +80,21 @@ app.get("/planets", (req, res) => {
   });
 });
 
-// Get planet details
+// CORREÇÃO 3: Endpoint /planet/:name - Usar parâmetros parametrizados
 app.get("/planet/:name", (req, res) => {
-  const planetName = req.params;
-  // Another potential SQL injection point (intentional)
-  const query = `SELECT * FROM planets WHERE name = '${planetName}'`;
+  const planetName = req.params.name; // Corrigido: acessando o nome corretamente
 
-  db.get(query, (err, planet) => {
+  // CORRIGIDO: Usando parâmetros parametrizados para prevenir SQL injection
+  const query = "SELECT * FROM planets WHERE name = ?";
+
+  db.get(query, [planetName], (err, planet) => {
     if (err) return res.status(500).json({ error: "DB error" });
     if (!planet) return res.status(404).json({ error: "Planet not found" });
     res.json(planet);
   });
 });
 
-// Get spice transactions
+// spice transactions
 app.get("/spice-transactions", (req, res) => {
   db.all(
     "SELECT * FROM spice_transactions ORDER BY transaction_date DESC",
@@ -105,7 +106,7 @@ app.get("/spice-transactions", (req, res) => {
   );
 });
 
-// Register endpoint
+// endpoint registro
 app.post("/register", (req, res) => {
   const { username, password, confirmPassword, house } = req.body;
 
@@ -113,7 +114,6 @@ app.post("/register", (req, res) => {
     return res.redirect("/register.html?error=Passwords+do+not+match");
   }
 
-  // Updated to include house affiliation
   db.run(
     "INSERT INTO users (username, password, house) VALUES (?, ?, ?)",
     [username, password, house || "None"],
@@ -129,15 +129,14 @@ app.post("/register", (req, res) => {
   );
 });
 
-// Login endpoint with blind SQL injection vulnerability
+// CORREÇÃO 4: Endpoint /login - Usar parâmetros parametrizados
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
 
-  // VULNERABLE: Blind SQL injection in the login query
-  // directly concatenating user input in SQL query
-  const query = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`;
+  // CORRIGIDO: Usando parâmetros parametrizados para prevenir SQL injection
+  const query = "SELECT * FROM users WHERE username = ? AND password = ?";
 
-  db.get(query, (err, user) => {
+  db.get(query, [username, password], (err, user) => {
     if (err) {
       console.error("Database error:", err.message);
       return res.redirect("/login.html?error=1");
@@ -183,7 +182,6 @@ app.get("/houses", (req, res) => {
   });
 });
 
-// Logout endpoint
 app.get("/logout", (req, res) => {
   req.session.destroy();
   res.redirect("/");
