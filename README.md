@@ -75,9 +75,9 @@ Essa mensagem não tem nenhum payload', (SELECT CASE WHEN (SELECT substr(passwor
 #### Explicação do Payload:
 
 1. Fecha a string atual com uma aspa e adiciona uma vírgula
-2. Usa uma instrução CASE para verificar se o primeiro caractere da senha de Paul é 'm'
+2. Usa uma instrução CASE para verificar se o primeiro caractere da senha de Paul é 'a'
 3. Comenta o resto da consulta
 
-Se o primeiro caractere for 'a', a consulta é executada com sucesso. Se não, ela falha devido a erros de sintaxe SQL.
+Se o primeiro caractere for 'a', a consulta é executada e retorna success. Se não, ela retorna fail.
 
 Para extrair a senha completa, modifique a posição (altere `1,1` para `2,1` para o segundo caractere) e tente diferentes caracteres.
