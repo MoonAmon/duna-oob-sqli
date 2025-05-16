@@ -1,4 +1,4 @@
-# Fórum com Injeção SQL Cega
+# Fórum com Injeção Blind SQL 
 
 ## Configuração
 
