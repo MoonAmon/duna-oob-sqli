@@ -1,209 +1,231 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Arrakis Communication Network - Registration</title>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Rede de Comunicação de Arrakis - Cadastro</title>
     <style>
-        body {
-            font-family: 'Trebuchet MS', sans-serif;
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f9f2e3; /* Sand color background */
-            color: #4a3f35;
-        }
-        .register-container {
-            border: 1px solid #b8860b;
-            padding: 20px;
-            border-radius: 5px;
-            margin-top: 50px;
-            background-color: white;
-            box-shadow: 0 2px 10px rgba(184, 134, 11, 0.1);
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #4a3f35;
-            font-weight: bold;
-        }
-        input[type="text"], input[type="password"], select {
-            width: 100%;
-            padding: 10px;
-            box-sizing: border-box;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-family: inherit;
-        }
-        select {
-            background-color: white;
-        }
-        button {
-            background-color: #b8860b;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            width: 100%;
-            margin-top: 10px;
-        }
-        button:hover {
-            background-color: #98660b;
-        }
-        .error {
-            color: #601111; /* Harkonnen red */
-            margin-bottom: 15px;
-            padding: 8px;
-            border-left: 3px solid #601111;
-            background-color: rgba(96, 17, 17, 0.1);
-        }
-        .success {
-            color: #204060; /* Atreides blue */
-            margin-bottom: 15px;
-            padding: 8px;
-            border-left: 3px solid #204060;
-            background-color: rgba(32, 64, 96, 0.1);
-        }
-        .links {
-            margin-top: 15px;
-            text-align: center;
-        }
-        .links a {
-            color: #b8860b;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .links a:hover {
-            text-decoration: underline;
-        }
-        h2 {
-            color: #b8860b;
-            text-align: center;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #b8860b;
-            padding-bottom: 10px;
-        }
-        .house-info {
-            font-size: 0.9em;
-            margin-top: 5px;
-            color: #666;
-        }
-        .form-header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-        .form-header img {
-            max-width: 100px;
-            margin-bottom: 10px;
-        }
+      body {
+        font-family: "Trebuchet MS", sans-serif;
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f9f2e3; /* Sand color background */
+        color: #4a3f35;
+      }
+      .register-container {
+        border: 1px solid #b8860b;
+        padding: 20px;
+        border-radius: 5px;
+        margin-top: 50px;
+        background-color: white;
+        box-shadow: 0 2px 10px rgba(184, 134, 11, 0.1);
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        color: #4a3f35;
+        font-weight: bold;
+      }
+      input[type="text"],
+      input[type="password"],
+      select {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: inherit;
+      }
+      select {
+        background-color: white;
+      }
+      button {
+        background-color: #b8860b;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        width: 100%;
+        margin-top: 10px;
+      }
+      button:hover {
+        background-color: #98660b;
+      }
+      .error {
+        color: #601111; /* Harkonnen red */
+        margin-bottom: 15px;
+        padding: 8px;
+        border-left: 3px solid #601111;
+        background-color: rgba(96, 17, 17, 0.1);
+      }
+      .success {
+        color: #204060; /* Atreides blue */
+        margin-bottom: 15px;
+        padding: 8px;
+        border-left: 3px solid #204060;
+        background-color: rgba(32, 64, 96, 0.1);
+      }
+      .links {
+        margin-top: 15px;
+        text-align: center;
+      }
+      .links a {
+        color: #b8860b;
+        text-decoration: none;
+        font-weight: bold;
+      }
+      .links a:hover {
+        text-decoration: underline;
+      }
+      h2 {
+        color: #b8860b;
+        text-align: center;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #b8860b;
+        padding-bottom: 10px;
+      }
+      .house-info {
+        font-size: 0.9em;
+        margin-top: 5px;
+        color: #666;
+      }
+      .form-header {
+        text-align: center;
+        margin-bottom: 25px;
+      }
+      .form-header img {
+        max-width: 100px;
+        margin-bottom: 10px;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="register-container">
-        <div class="form-header">
-            <h2>Imperial Registration</h2>
-            <p>Join the Arrakis Communication Network</p>
+      <div class="form-header">
+        <h2>Registro Imperial</h2>
+        <p>Entre para a Rede de Comunicação de Arrakis</p>
+      </div>
+
+      <div id="message"></div>
+
+      <form id="registerForm" action="/register" method="POST">
+        <div class="form-group">
+          <label for="username">Nome de usuário:</label>
+          <input type="text" id="username" name="username" required />
         </div>
-        
-        <div id="message"></div>
-        
-        <form id="registerForm" action="/register" method="POST">
-            <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="house">House Affiliation:</label>
-                <select id="house" name="house" required>
-                    <option value="" disabled selected>Select your house</option>
-                    <option value="Atreides">House Atreides</option>
-                    <option value="Harkonnen">House Harkonnen</option>
-                    <option value="Corrino">House Corrino</option>
-                    <option value="Fremen">Fremen</option>
-                    <option value="Bene Gesserit">Bene Gesserit</option>
-                    <option value="Spacing Guild">Spacing Guild</option>
-                    <option value="Tleilaxu">Tleilaxu</option>
-                    <option value="None">No Affiliation</option>
-                </select>
-                <div class="house-info" id="houseInfo"></div>
-            </div>
-            
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="confirmPassword">Confirm Password:</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" required>
-            </div>
-            
-            <button type="submit">Register</button>
-        </form>
-        
-        <div class="links">
-            <p>Already have an account? <a href="/login.html">Login</a></p>
-            <p><a href="/">Back to Home</a></p>
+
+        <div class="form-group">
+          <label for="house">Afiliação de Casa:</label>
+          <select id="house" name="house" required>
+            <option value="" disabled selected>Selecione sua casa</option>
+            <option value="Atreides">Casa Atreides</option>
+            <option value="Harkonnen">Casa Harkonnen</option>
+            <option value="Corrino">Casa Corrino</option>
+            <option value="Fremen">Fremen</option>
+            <option value="Bene Gesserit">Bene Gesserit</option>
+            <option value="Spacing Guild">Guilda Espacial</option>
+            <option value="Tleilaxu">Tleilaxu</option>
+            <option value="None">Sem Afiliação</option>
+          </select>
+          <div class="house-info" id="houseInfo"></div>
         </div>
+        <div class="form-group">
+          <label for="password">Senha:</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Confirmar Senha:</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            required
+          />
+        </div>
+
+        <button type="submit">Cadastrar</button>
+      </form>
+
+      <div class="links">
+        <p>Já possui uma conta? <a href="/login.html">Entrar</a></p>
+        <p><a href="/">Voltar à Página Inicial</a></p>
+      </div>
     </div>
 
     <script>
-        // Check for messages in URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const error = urlParams.get('error');
-        const success = urlParams.get('success');
-        const messageDiv = document.getElementById('message');
-        
-        if (error) {
-            messageDiv.textContent = error;
-            messageDiv.className = 'error';
-        } else if (success) {
-            messageDiv.textContent = 'Registration successful! You can now login.';
-            messageDiv.className = 'success';
+      // Check for messages in URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const error = urlParams.get("error");
+      const success = urlParams.get("success");
+      const messageDiv = document.getElementById("message");
+
+      if (error) {
+        if (error === "Passwords+do+not+match") {
+          messageDiv.textContent = "As senhas não coincidem";
+        } else if (error === "Username+already+exists") {
+          messageDiv.textContent = "Nome de usuário já existe";
+        } else if (error === "Registration+failed") {
+          messageDiv.textContent = "Falha no cadastro";
+        } else {
+          messageDiv.textContent = error;
         }
-        
-        // House information
-        const houseInfo = {
-            'Atreides': 'Noble House known for honor and justice, based on Caladan.',
-            'Harkonnen': 'Brutal and cunning House, former rulers of Arrakis.',
-            'Corrino': 'The Imperial House ruling from Kaitain.',
-            'Fremen': 'Native inhabitants of Arrakis who know the ways of the desert.',
-            'Bene Gesserit': 'Ancient sisterhood with powers of observation and manipulation.',
-            'Spacing Guild': 'Controllers of interstellar travel, dependent on the spice.',
-            'Tleilaxu': 'Genetic engineers and makers of gholas and artificial replacement organs.'
-        };
-        
-        // Display house information on selection
-        document.getElementById('house').addEventListener('change', function() {
-            const selectedHouse = this.value;
-            const houseInfoDiv = document.getElementById('houseInfo');
-            houseInfoDiv.textContent = houseInfo[selectedHouse] || '';
-        });
-        
-        // Form validation
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const house = document.getElementById('house').value;
-            
-            if (password !== confirmPassword) {
-                e.preventDefault();
-                messageDiv.textContent = 'Passwords do not match';
-                messageDiv.className = 'error';
-            }
-            
-            if (!house) {
-                e.preventDefault();
-                messageDiv.textContent = 'Please select a House affiliation';
-                messageDiv.className = 'error';
-            }
+        messageDiv.className = "error";
+      } else if (success) {
+        messageDiv.textContent =
+          "Cadastro realizado com sucesso! Você já pode fazer login.";
+        messageDiv.className = "success";
+      }
+      // House information
+      const houseInfo = {
+        Atreides:
+          "Casa nobre conhecida por honra e justiça, baseada em Caladan.",
+        Harkonnen: "Casa brutal e astuta, antigos governantes de Arrakis.",
+        Corrino: "A Casa Imperial governando a partir de Kaitain.",
+        Fremen:
+          "Habitantes nativos de Arrakis que conhecem os caminhos do deserto.",
+        "Bene Gesserit":
+          "Antiga irmandade com poderes de observação e manipulação.",
+        "Spacing Guild":
+          "Controladores de viagens interestelares, dependentes da especiaria.",
+        Tleilaxu:
+          "Engenheiros genéticos e criadores de gholas e órgãos artificiais.",
+      };
+
+      // Display house information on selection
+      document.getElementById("house").addEventListener("change", function () {
+        const selectedHouse = this.value;
+        const houseInfoDiv = document.getElementById("houseInfo");
+        houseInfoDiv.textContent = houseInfo[selectedHouse] || "";
+      });
+      // Form validation
+      document
+        .getElementById("registerForm")
+        .addEventListener("submit", function (e) {
+          const password = document.getElementById("password").value;
+          const confirmPassword =
+            document.getElementById("confirmPassword").value;
+          const house = document.getElementById("house").value;
+
+          if (password !== confirmPassword) {
+            e.preventDefault();
+            messageDiv.textContent = "As senhas não coincidem";
+            messageDiv.className = "error";
+          }
+
+          if (!house) {
+            e.preventDefault();
+            messageDiv.textContent =
+              "Por favor, selecione uma afiliação de Casa";
+            messageDiv.className = "error";
+          }
         });
     </script>
-</body>
+  </body>
 </html>

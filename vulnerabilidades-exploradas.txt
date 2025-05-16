@@ -7,5 +7,5 @@ password: ' OR '1'='1
 
 /post
 const query = `INSERT INTO messages (username, content, planet) 
-                VALUES ('${username}', '${content}', '${planet || "Unknown"}')`;
+                VALUES ('${username}', '${content}', '${planet || "Desconhecido"}')`;
 DROP TABLE messages;

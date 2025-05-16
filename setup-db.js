@@ -2,7 +2,7 @@ const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database("duna.db");
 
 db.serialize(() => {
-  // Create messages table
+  // Criar tabela de mensagens
   db.run(`DROP TABLE IF EXISTS messages`);
   db.run(`CREATE TABLE messages (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -11,64 +11,62 @@ db.serialize(() => {
     planet TEXT,
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
-
-  // Insert Dune-themed messages
+  // Inserir mensagens temáticas de Duna
   const msgStmt = db.prepare(
     "INSERT INTO messages (username, content, planet) VALUES (?, ?, ?)"
   );
   msgStmt.run(
     "PaulAtreides",
-    "The spice must flow. Welcome to the Arrakis Communication Network.",
+    "A especiaria deve fluir. Bem-vindo à Rede de Comunicação de Arrakis.",
     "Arrakis"
   );
   msgStmt.run(
     "LadyJessica",
-    "Remember your Bene Gesserit training. Fear is the mind-killer.",
+    "Lembre-se do seu treinamento Bene Gesserit. O medo é o assassino da mente.",
     "Caladan"
   );
   msgStmt.run(
     "LetoBaron",
-    "House Harkonnen stands ready to crush any opposition.",
+    "A Casa Harkonnen está pronta para esmagar qualquer oposição.",
     "Giedi Prime"
   );
   msgStmt.run(
     "Stilgar",
-    "Water discipline must be maintained at all times in the sietch.",
+    "A disciplina da água deve ser mantida o tempo todo no sietch.",
     "Arrakis"
   );
   msgStmt.run(
     "Chani",
-    "I have seen visions of the future in the spice trance.",
+    "Eu vi visões do futuro no transe da especiaria.",
     "Arrakis"
   );
   msgStmt.run(
     "GurneyHalleck",
-    "Mood is a thing for cattle and loveplay, not fighting!",
+    "Humor é coisa para gado e jogos de amor, não para lutas!",
     "Caladan"
   );
   msgStmt.run(
     "DuncanIdaho",
-    "My loyalty to House Atreides is unwavering.",
+    "Minha lealdade à Casa Atreides é inabalável.",
     "Caladan"
   );
   msgStmt.run(
     "Piter",
-    "The calculations are precise. The trap is set.",
+    "Os cálculos são precisos. A armadilha está montada.",
     "Giedi Prime"
   );
   msgStmt.run(
     "Irulan",
-    "I begin this chronicle of Muad'Dib with stories from the sietch.",
+    "Eu começo esta crônica de Muad'Dib com histórias do sietch.",
     "Kaitain"
   );
   msgStmt.run(
     "Liet",
-    "The ecological transformation of Arrakis is proceeding according to plan.",
+    "A transformação ecológica de Arrakis está procedendo de acordo com o plano.",
     "Arrakis"
   );
   msgStmt.finalize();
-
-  // Create users table
+  // Criar tabela de usuários
   db.run(`DROP TABLE IF EXISTS users`);
   db.run(`CREATE TABLE users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -78,11 +76,11 @@ db.serialize(() => {
     role TEXT DEFAULT 'user'
   )`);
 
-  // Insert Dune-themed users
+  // Inserir usuários temáticos de Duna
   const userStmt = db.prepare(
     "INSERT INTO users (username, password, house, role) VALUES (?, ?, ?, ?)"
   );
-  userStmt.run("PaulAtreides", "muadDib123", "Atreides", "admin");
+  userStmt.run("PaulAtreides", "admin123", "Atreides", "admin");
   userStmt.run("LadyJessica", "beneGesserit456", "Atreides", "moderator");
   userStmt.run("DukeLeto", "caladan789", "Atreides", "admin");
   userStmt.run("LetoBaron", "harkonnen123", "Harkonnen", "admin");

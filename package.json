@@ -1,7 +1,7 @@
 {
   "name": "duna-oob-sqli",
   "version": "1.0.0",
-  "description": "Simple forum app with blind SQL injection for educational purposes",
+  "description": "Aplicativo simples de fórum com injeção SQL cega para fins educacionais",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

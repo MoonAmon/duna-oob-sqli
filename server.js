@@ -28,9 +28,8 @@ app.use(
 // If not, it will appear to fail with an error but not tell you the exact reason
 app.post("/post", (req, res) => {
   const { username, content, planet } = req.body;
-
-  // VULNERABLE: Blind SQL injection in the message posting
-  // The content parameter is directly concatenated into the SQL query
+  // VULNERÁVEL: Blind SQLi na postagem de mensagem
+  // O parâmetro content é concatenado diretamente na query SQL
   const query = `INSERT INTO messages (username, content, planet) 
                   VALUES ('${username}', '${content}', '${
     planet || "Unknown"
@@ -38,20 +37,20 @@ app.post("/post", (req, res) => {
 
   db.run(query, (err) => {
     if (err) {
-      console.error("Database error:", err.message);
-      return res.status(500).send("Error posting message");
+      console.error("Erro no banco de dados:", err.message);
+      return res.status(500).send("Erro ao postar mensagem");
     }
     res.redirect("/forum.html");
   });
 });
 
-// List all messages
+// Listar todas as mensagens
 app.get("/messages", (req, res) => {
   db.all(
     "SELECT id, username, content, planet, timestamp FROM messages ORDER BY id DESC",
     [],
     (err, rows) => {
-      if (err) return res.status(500).json({ error: "DB error" });
+      if (err) return res.status(500).json({ error: "Erro no BD" });
       res.json(rows);
     }
   );
@@ -60,14 +59,14 @@ app.get("/messages", (req, res) => {
 // Blind SQLi vulnerable endpoint for messages
 app.get("/message", (req, res) => {
   const id = req.query.id;
-  // Intentionally vulnerable: user input directly in query
+  // Intencionalmente vulnerável: entrada do usuário diretamente na query
   db.get(`SELECT * FROM messages WHERE id = ${id}`, (err, row) => {
-    if (err) return res.status(500).send("DB error");
-    // Blind: only tell if exists or not
+    if (err) return res.status(500).send("Erro no BD");
+    // Cego: apenas informa se existe ou não
     if (row) {
-      res.send("Message exists");
+      res.send("Mensagem existe");
     } else {
-      res.send("No message");
+      res.send("Mensagem não encontrada");
     }
   });
 });
@@ -75,7 +74,7 @@ app.get("/message", (req, res) => {
 // Get all planets
 app.get("/planets", (req, res) => {
   db.all("SELECT * FROM planets ORDER BY name", [], (err, rows) => {
-    if (err) return res.status(500).json({ error: "DB error" });
+    if (err) return res.status(500).json({ error: "Erro no BD" });
     res.json(rows);
   });
 });
@@ -83,68 +82,69 @@ app.get("/planets", (req, res) => {
 // Get planet details
 app.get("/planet/:name", (req, res) => {
   const planetName = req.params;
-  // Another potential SQL injection point (intentional)
+  // Outro ponto potencial de injeção SQL (intencional)
   const query = `SELECT * FROM planets WHERE name = '${planetName}'`;
 
   db.get(query, (err, planet) => {
-    if (err) return res.status(500).json({ error: "DB error" });
-    if (!planet) return res.status(404).json({ error: "Planet not found" });
+    if (err) return res.status(500).json({ error: "Erro no BD" });
+    if (!planet)
+      return res.status(404).json({ error: "Planeta não encontrado" });
     res.json(planet);
   });
 });
 
-// Get spice transactions
+// Obter transações de especiaria
 app.get("/spice-transactions", (req, res) => {
   db.all(
     "SELECT * FROM spice_transactions ORDER BY transaction_date DESC",
     [],
     (err, rows) => {
-      if (err) return res.status(500).json({ error: "DB error" });
+      if (err) return res.status(500).json({ error: "Erro no BD" });
       res.json(rows);
     }
   );
 });
 
-// Register endpoint
+// Endpoint de registro
 app.post("/register", (req, res) => {
   const { username, password, confirmPassword, house } = req.body;
 
   if (password !== confirmPassword) {
-    return res.redirect("/register.html?error=Passwords+do+not+match");
+    return res.redirect("/register.html?error=As+senhas+não+coincidem");
   }
 
-  // Updated to include house affiliation
+  // Atualizado para incluir afiliação de casa
   db.run(
     "INSERT INTO users (username, password, house) VALUES (?, ?, ?)",
-    [username, password, house || "None"],
+    [username, password, house || "Nenhuma"],
     function (err) {
       if (err) {
         if (err.message.includes("UNIQUE constraint failed")) {
-          return res.redirect("/register.html?error=Username+already+exists");
+          return res.redirect("/register.html?error=Nome+de+usuário+já+existe");
         }
-        return res.redirect("/register.html?error=Registration+failed");
+        return res.redirect("/register.html?error=Falha+no+cadastro");
       }
       res.redirect("/login.html?success=1");
     }
   );
 });
 
-// Login endpoint with blind SQL injection vulnerability
+// Endpoint de login com vulnerabilidade de injeção SQL cega
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
 
-  // VULNERABLE: Blind SQL injection in the login query
-  // directly concatenating user input in SQL query
+  // VULNERÁVEL: Injeção SQL cega na query de login
+  // concatenando diretamente a entrada do usuário na query SQL
   const query = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`;
 
   db.get(query, (err, user) => {
     if (err) {
-      console.error("Database error:", err.message);
+      console.error("Erro no banco de dados:", err.message);
       return res.redirect("/login.html?error=1");
     }
 
     if (user) {
-      // Login successful
+      // Login bem-sucedido
       req.session.user = {
         id: user.id,
         username: user.username,
@@ -153,13 +153,13 @@ app.post("/login", (req, res) => {
       };
       res.redirect("/forum.html");
     } else {
-      // Login failed
+      // Login falhou
       res.redirect("/login.html?error=1");
     }
   });
 });
 
-// Check if user is authenticated
+// Verificar se o usuário está autenticado
 app.get("/auth-status", (req, res) => {
   if (req.session.user) {
     res.json({
@@ -175,20 +175,22 @@ app.get("/auth-status", (req, res) => {
   }
 });
 
-// Get house information
+// Obter informação de casas
 app.get("/houses", (req, res) => {
   db.all("SELECT DISTINCT house FROM users ORDER BY house", [], (err, rows) => {
-    if (err) return res.status(500).json({ error: "DB error" });
+    if (err) return res.status(500).json({ error: "Erro no BD" });
     res.json(rows.map((row) => row.house));
   });
 });
 
-// Logout endpoint
+// Endpoint de logout
 app.get("/logout", (req, res) => {
   req.session.destroy();
   res.redirect("/");
 });
 
 app.listen(3000, () => {
-  console.log("Arrakis Communication Network running on http://localhost:3000");
+  console.log(
+    "Rede de Comunicação de Arrakis rodando em http://localhost:3000"
+  );
 });
