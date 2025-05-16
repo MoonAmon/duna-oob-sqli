@@ -5,6 +5,9 @@
 username: ' OR '1'='1
 password: ' OR '1'='1
 
+username: admin' --
+password: qualquercoisa
+
 /post
 const query = `INSERT INTO messages (username, content, planet) 
                 VALUES ('${username}', '${content}', '${planet || "Desconhecido"}')`;
